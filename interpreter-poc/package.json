@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npm run db:setup:local && next dev --turbopack",
-    "build": "npm run db:setup:prod && prisma generate && next build",
+    "build": "npm run db:setup:prod && prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint",
     "db:setup:local": "cp prisma/schema.sqlite.prisma prisma/schema.prisma",
