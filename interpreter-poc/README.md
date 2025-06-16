@@ -198,22 +198,7 @@ model Action {
 - Automatic retry mechanisms
 - Error message capture and display
 
-## 🎯 Deliverables Mapping
 
-This proof-of-concept directly addresses all requested deliverables:
-
-| **Requirement** | **Implementation** | **Location** |
-|---|---|---|
-| **Feature Documentation & Rationale** | Comprehensive feature list with business justification | This README |
-| **Functional Prototype** | Working English-Spanish medical interpreter | `/components/RealtimeInterpreter.tsx` |
-| **Feature Complete UI** | Professional medical interface with all controls | `/app/page.tsx`, `/admin/page.tsx` |
-| **Text-to-Speech Output** | OpenAI Realtime API + Web Speech API integration | Built into both interpreter modes |
-| **Bilingual Conversation Display** | Role-based styling with language indicators | Real-time conversation view |
-| **Conversation Summary** | Database storage with searchable history | `/history/page.tsx` |
-| **Database Storage** | Prisma ORM with comprehensive schema | `/prisma/schema.prisma` |
-| **Intent/Action Recognition** | Medical action detection with metadata | OpenAI function calling |
-| **Action Execution** | Webhook integration with status tracking | `/api/execute-action/route.ts` |
-| **Technical Design Doc** | Architecture, decisions, and rationale | This README (Technical Design section) |
 
 ## 🏗️ Technical Design Document
 
@@ -239,90 +224,6 @@ This proof-of-concept directly addresses all requested deliverables:
 │ • Whisper STT   │    │ • Custom URLs    │
 │ • TTS           │    │ • Action Exec    │
 └─────────────────┘    └──────────────────┘
-```
-
-### Technology Stack Rationale
-
-**Frontend Framework: Next.js 15 + React 19**
-- **Rationale**: Latest features, excellent TypeScript support, built-in API routes
-- **Benefits**: Server-side rendering, automatic code splitting, development efficiency
-
-**State Management: Redux Toolkit**
-- **Rationale**: Predictable state management for complex conversation flows
-- **Benefits**: Time-travel debugging, middleware support, DevTools integration
-
-**Styling: Tailwind CSS**
-- **Rationale**: Rapid UI development with consistent design system
-- **Benefits**: Utility-first approach, responsive design, small bundle size
-
-**Database: Prisma + SQLite**
-- **Rationale**: Type-safe database access with easy deployment
-- **Benefits**: Schema migrations, query optimization, development simplicity
-
-**AI Integration: OpenAI Realtime API**
-- **Rationale**: State-of-the-art real-time voice processing
-- **Benefits**: Sub-second latency, function calling, professional quality
-
-### Key Technical Decisions
-
-**1. Dual-Mode Architecture**
-```typescript
-// Flexible mode switching
-const [useRealtimeAPI, setUseRealtimeAPI] = useState(true);
-
-// Component selection
-{useRealtimeAPI ? (
-  <RealtimeInterpreter conversationId={conversationId} />
-) : (
-  <InterpreterDemo conversationId={conversationId} />
-)}
-```
-
-**2. WebRTC Integration**
-```typescript
-// Low-latency audio streaming
-const pc = new RTCPeerConnection();
-const dataChannel = pc.createDataChannel('oai-events');
-
-// Real-time event handling
-dataChannel.onmessage = (event) => {
-  handleRealtimeEvent(JSON.parse(event.data));
-};
-```
-
-**3. Automatic Language Detection**
-```typescript
-// Comprehensive language analysis
-const detectLanguage = (text: string): 'en' | 'es' => {
-  const spanishWords = [...]; // 100+ medical terms
-  const englishWords = [...]; // 100+ medical terms
-  
-  // Statistical analysis + pattern matching
-  const spanishRatio = spanishMatches / words.length;
-  const englishRatio = englishMatches / words.length;
-  
-  return spanishRatio > englishRatio ? 'es' : 'en';
-};
-```
-
-**4. Action Detection Pipeline**
-```typescript
-// OpenAI function calling
-tools: [{
-  type: 'function',
-  name: 'detect_medical_action',
-  description: 'Detect and extract medical actions',
-  parameters: {
-    type: 'object',
-    properties: {
-      action_type: {
-        type: 'string',
-        enum: ['schedule_lab', 'schedule_followup', 'prescribe_medication', 'refer_specialist']
-      },
-      parameters: { type: 'object' }
-    }
-  }
-}]
 ```
 
 ### Performance Optimizations
@@ -394,7 +295,6 @@ cd medical-interpreter
 npm install
 
 # Set up environment variables
-cp .env.example .env
 # Add your OPENAI_API_KEY and WEBHOOK_SITE_URL
 
 # Initialize database
@@ -445,7 +345,7 @@ DATABASE_URL="file:./prisma/db.sqlite"
 ### Actions  
 - `POST /api/actions` - Create new action
 - `GET /api/actions` - List actions with filtering
-- `PATCH /api/actions` - Update action status
+- `PUT /api/actions` - Update action status
 
 ### Realtime
 - `GET /api/realtime-token` - Generate ephemeral tokens
@@ -453,52 +353,5 @@ DATABASE_URL="file:./prisma/db.sqlite"
 
 ## 🧪 Testing
 
-### Manual Testing
-1. Use the "🧪 Create Test Action" button in admin
-2. Test different medical phrases for action detection
-3. Verify webhook delivery and response handling
-4. Test "repeat that" functionality in both languages
 
-### Automated Testing
-```bash
-# Run type checking
-npm run type-check
 
-# Run linting
-npm run lint
-
-# Build verification
-npm run build
-```
-
-## 📈 Future Enhancements
-
-### Technical Improvements
-- WebSocket implementation for real-time admin updates
-- Audio recording and playback capabilities
-- Advanced conversation analytics
-- Multi-language support beyond English/Spanish
-
-### Medical Features
-- Integration with Electronic Health Records (EHR)
-- HIPAA compliance enhancements
-- Specialized medical terminology training
-- Voice biometric patient identification
-
-### Deployment
-- Docker containerization
-- Cloud deployment guides (AWS, Azure, GCP)
-- Production database migration (PostgreSQL)
-- Monitoring and logging integration
-
-## 📝 License
-
-This project is a proof-of-concept for demonstration purposes.
-
-## 🤝 Contributing
-
-This is a proof-of-concept project. For production use, consider:
-- HIPAA compliance requirements
-- Production database setup
-- Security auditing
-- Performance testing at scale
