@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
+    "dev": "npm run db:setup:local && next dev --turbopack",
+    "build": "npm run db:setup:prod && prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "db:setup:local": "cp prisma/schema.sqlite.prisma prisma/schema.prisma",
+    "db:setup:prod": "cp prisma/schema.postgresql.prisma prisma/schema.prisma",
     "db:migrate:local": "chmod +x scripts/migrate-local.sh && ./scripts/migrate-local.sh",
     "db:migrate:prod": "chmod +x scripts/migrate-production.sh && ./scripts/migrate-production.sh",
-    "db:studio": "prisma studio",
-    "db:reset": "prisma migrate reset",
+    "db:studio": "npm run db:setup:local && prisma studio",
+    "db:reset": "npm run db:setup:local && prisma migrate reset",
     "postinstall": "prisma generate"
   },
   "dependencies": {
