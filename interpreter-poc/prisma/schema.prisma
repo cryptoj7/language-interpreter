@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./db.sqlite"
+}
+
+model Conversation {
+  id          String      @id @default(cuid())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  summary     String?
+  actions     String?     // Keep for backward compatibility, but will be deprecated
+  status      String      @default("active")
+  utterances  Utterance[]
+  detectedActions Action[]
+  
+  @@map("conversations")
+}
+
+model Utterance {
+  id              String       @id
+  conversationId  String
+  role            String
+  text            String
+  originalLang    String
+  translatedText  String?
+  timestamp       DateTime
+  audioUrl        String?
+  conversation    Conversation @relation(fields: [conversationId], references: [id])
+  
+  @@map("utterances")
+}
+
+model Action {
+  id              String       @id @default(cuid())
+  conversationId  String
+  actionType      String       // 'schedule_lab', 'schedule_followup', etc.
+  parameters      String       // JSON string of parameters
+  status          String       @default("detected") // 'detected', 'executing', 'completed', 'failed'
+  webhookUrl      String?      // URL where webhook was sent
+  webhookStatus   Int?         // HTTP status code from webhook
+  webhookResponse String?      // Response from webhook
+  errorMessage    String?      // Error details if failed
+  detectedAt      DateTime     @default(now())
+  executedAt      DateTime?    // When webhook was sent
+  completedAt     DateTime?    // When action was fully completed
+  retryCount      Int          @default(0)
+  conversation    Conversation @relation(fields: [conversationId], references: [id])
+  
+  @@index([conversationId])
+  @@index([status])
+  @@index([actionType])
+} 
