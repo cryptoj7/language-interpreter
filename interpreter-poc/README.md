@@ -1,5 +1,7 @@
 # Medical Language Interpreter - Proof of Concept
 
+App deployed [here](https://language-interpreter.vercel.app/)
+
 A real-time medical interpretation system enabling seamless communication between English and Spanish speakers in healthcare settings, powered by OpenAI's Realtime API and Web Speech technologies.
 
 ## 🎯 Project Overview
