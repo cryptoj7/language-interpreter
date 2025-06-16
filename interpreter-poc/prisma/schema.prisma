@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./db.sqlite"
+  provider = env("DATABASE_PROVIDER")
+  url      = env("DATABASE_URL")
 }
 
 model Conversation {
@@ -32,7 +32,7 @@ model Utterance {
   translatedText  String?
   timestamp       DateTime
   audioUrl        String?
-  conversation    Conversation @relation(fields: [conversationId], references: [id])
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   
   @@map("utterances")
 }
@@ -51,7 +51,7 @@ model Action {
   executedAt      DateTime?    // When webhook was sent
   completedAt     DateTime?    // When action was fully completed
   retryCount      Int          @default(0)
-  conversation    Conversation @relation(fields: [conversationId], references: [id])
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   
   @@index([conversationId])
   @@index([status])

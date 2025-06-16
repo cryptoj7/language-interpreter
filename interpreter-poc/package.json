@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:migrate:local": "chmod +x scripts/migrate-local.sh && ./scripts/migrate-local.sh",
+    "db:migrate:prod": "chmod +x scripts/migrate-production.sh && ./scripts/migrate-production.sh",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.9.0",
